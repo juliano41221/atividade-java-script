@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=>, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Local Storage</h2>
+    <label for="">Informe nome</label>
+    <input type="text" id="nome" placeholder="nome"/>
+    <button onclick="gravar()">Gravar</button>
+
+    <hr />
+    <a href="index.html">Ler dados</a>
+    <script>
+        function gravar() {
+        let contatos = JSON.parse(localStorage.getItem('contatos')) || []
+        const novoContato = document.getElementById('nome').value
+
+        if (!contatos.includes(novoContato)) {
+            contatos.push(novoContato)
+            localStorage.setItem('contatos', JSON.stringify(contatos));
+        } else {
+            alert('Esse contato já existe!');
+        }
+    }
+        /*console.log(localStorage.getItem('teste'))
+        let cesta = JSON.parse(localStorage.getItem('cesta')) || []
+          cesta.map(f => console.log(f))*/
+          
+    </script>
+</body>
+</html>

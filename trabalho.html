@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cep</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: rgb(111, 109, 108);
+        padding: 15vh;
+        border: 10px solid;
+        border-image-source: linear-gradient(90deg, black, #fa0303);
+        border-image-slice: 1;
+        animation: bordaAnimada 3s linear infinite;
+    }
+
+    button {
+        margin-top: 7px;
+    }
+
+    a {
+        margin-top: 7px;
+    }
+
+    h2 {
+        position: absolute;
+        top: 15%;
+        font-size: 50px;
+        color: white;
+        text-shadow: 2px 2px 4px black;
+    }
+
+    input {
+        margin: 5px 0;
+        width: 300px;
+        height: 40px;
+        border-radius: 7px 5px;
+        border: 1px solid white;
+        border-color: white;
+        padding-left: 10px;
+        font-size: 20px;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: orange;
+    }
+
+    p {
+        margin: 5px 0;
+        font-size: 20px;
+        color: orange;
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 5vh;
+        }
+
+        h2 {
+            top: 10%;
+            font-size: 40px;
+        }
+
+        input {
+            width: auto;
+        }
+    }
+
+    @media (max-width: 480px) {
+        input {
+            width: 100%;
+        }
+
+        h2 {
+            top: 5%;
+            font-size: 30px;
+        }
+    }
+
+    @keyframes bordaAnimada {
+        0% {
+            border-image-source: linear-gradient(90deg, black, rgb(255, 0, 0));
+        }
+
+        50% {
+            border-image-source: linear-gradient(90deg, rgb(255, 17, 0), black);
+        }
+
+        100% {
+            border-image-source: linear-gradient(90deg, black, rgb(255, 1, 1));
+        }
+    }
+</style>
+
+<body style="background-image: linear-gradient(to right, rgb(0, 0, 0),rgb(214, 12, 12));">
+
+    <h2>Cadastro</h2>
+
+    <input type="text" id="nome" placeholder="Digite seu nome">
+    <input type="text" id="email" placeholder="Digite seu email">
+    <input type="text" id="fone" placeholder="Digite o seu telefone">
+    <input type="text" id="cep" placeholder="Digite o cep">
+
+    <button class="btn btn-dark" onclick="Logradouro()">Consultar</button>
+    <button class="btn btn-warning" onclick="limpar()">Limpar</button>
+    <a href="tabela.html" class="btn btn-light">Visualizar</a>
+
+    <p id="logradouro"> </p>
+    <p id="bairro"> </p>
+    <p id="localidade"> </p>
+    <p id="uf"> </p>
+    <p id="regiao"></p>
+
+    <script>
+        function Logradouro() {
+    let nome = document.getElementById('nome').value;
+    let email = document.getElementById('email').value;
+    let fone = document.getElementById('fone').value;
+    let cep = document.getElementById('cep').value;
+
+    if (!nome || !email || !fone || !cep) {
+        alert('Detectamos algum erro, verifique se todos os campos foram preenchidos!');
+        return;
+    }
+
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(data => data.json())
+        .then(res => {
+            if (res.erro) {
+                alert('CEP não encontrado!');
+                return;
+            }
+
+            document.getElementById('logradouro').innerHTML = 'Rua: ' + (res.logradouro || 'Não encontrado');
+            document.getElementById('bairro').innerHTML = 'Bairro: ' + (res.bairro || 'Não encontrado');
+            document.getElementById('localidade').innerHTML = 'Cidade: ' + (res.localidade || 'Não encontrado');
+            document.getElementById('uf').innerHTML = 'Estado: ' + (res.uf || 'Não encontrado');
+            document.getElementById('regiao').innerHTML = 'Região: ' + (res.regiao || 'Não encontrado');
+
+            const userData = {
+                nome: nome,
+                email: email,
+                fone: fone,
+                cep: cep,
+                logradouro: res.logradouro,
+                bairro: res.bairro,
+                localidade: res.localidade,
+                uf: res.uf,
+                regiao: res.regiao
+            };
+
+            // Carregar os dados já existentes e adicionar o novo
+            let allUserData = JSON.parse(localStorage.getItem('allUserData')) || [];
+            allUserData.push(userData);
+            localStorage.setItem('allUserData', JSON.stringify(allUserData));
+
+            alert('Consulta realizada com sucesso!');
+        })
+        .catch(err => {
+            alert('Erro ao buscar o CEP. Verifique se o CEP está correto.');
+        });
+}
+
+    </script>
+
+</body>
+
+</html>
