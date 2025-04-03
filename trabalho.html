@@ -160,7 +160,6 @@
                 regiao: res.regiao
             };
 
-            // Carregar os dados já existentes e adicionar o novo
             let allUserData = JSON.parse(localStorage.getItem('allUserData')) || [];
             allUserData.push(userData);
             localStorage.setItem('allUserData', JSON.stringify(allUserData));
